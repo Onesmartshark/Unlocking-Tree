@@ -31,8 +31,8 @@ let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.3</h3><br>
 		- Added super rebirth.<br>
 	<h3>v0.2</h3><br>
-		- Added rebirth.<br>
-		- Added unlocker T2.
+		- Added rebirth.
+		- Added unlocker T2.<br>
 	<h3>v0.1</h3><br>
 		- Added prestige.<br>
 		- Added unlocker T1.`
