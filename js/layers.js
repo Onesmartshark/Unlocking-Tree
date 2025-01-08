@@ -14,6 +14,7 @@ addLayer("p", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.5, // Prestige currency exponent
+    autoUpgrade() {return hasMilestone('u2', 0) && player.p.autoupg},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         cap = new Decimal(1e9)
@@ -33,6 +34,17 @@ addLayer("p", {
         exp = new Decimal(1)
         return exp
     },
+
+    bonusfunct1() {
+        pggain = new Decimal(1)
+        if (!hasMilestone('u4', 0)) pggain = pggain.times(0)
+        if (!player.p.autogen) pggain = pggain.times(0)
+        return pggain
+    },
+
+    passiveGeneration() {return pggain},
+
+
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -106,6 +118,7 @@ addLayer("r", {
     baseAmount() {return player.p.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.5, // Prestige currency exponent
+    autoUpgrade() {return hasMilestone('u3', 0) && player.r.autoupg},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         cap = new Decimal(1e9)
@@ -168,6 +181,8 @@ addLayer("s", {
     baseAmount() {return player.r.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.5, // Prestige currency exponent
+    autoUpgrade() {return hasMilestone('u4', 0)},
+    autoUpgrade() {return hasMilestone('u4', 0) && player.s.autoupg},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         cap = new Decimal(1e9)
@@ -465,8 +480,9 @@ addLayer("u2", {
         0: {
             requirementDescription: "Unlocker 2",
             done() { return player.u2.points.gte(1) },
-            effectDescription: "Unlock Super Rebirth.",
+            effectDescription: "Unlock Super Rebirth. Automate prestige upgrades, every unlocker ahead automates the next layer",
             unlocked() {return true},
+            toggles: [["p","autoupg"]],
         },
     },
     layerShown(){return hasUpgrade('r', 14) && hasMilestone('u1', 0) || hasMilestone('u2', 0)}
@@ -517,6 +533,7 @@ addLayer("u3", {
             done() { return player.u3.points.gte(1) },
             effectDescription: "Unlock Ultra Rebirth. Also, x100 points.",
             unlocked() {return true},
+            toggles: [["r","autoupg"]],
         },
     },
     layerShown(){return hasUpgrade('s', 15) && hasMilestone('u2', 0) || hasMilestone('u3', 0)}
@@ -546,6 +563,7 @@ addLayer("u4", {
     gainExp() { // Calculate the exponent on main currency from bonuses
         return new Decimal(1)
     },
+
     doReset(resettingLayer) {
         let keep = [];
         player.p.points = new Decimal("0"); 
@@ -571,8 +589,9 @@ addLayer("u4", {
         0: {
             requirementDescription: "Unlocker 4",
             done() { return player.u4.points.gte(1) },
-            effectDescription: "Unlock mega prestige, keep boosters on ultra prestige, and x10,000 points.",
+            effectDescription: "Unlock mega prestige, keep boosters on ultra prestige, and x10,000 points. Also, passively generate prestige!",
             unlocked() {return true},
+            toggles: [["s","autoupg"],["p","autogen"]],
         },
     },
     layerShown(){return hasUpgrade('u', 15) && hasMilestone('u3', 0) || hasMilestone('u4', 0)}
