@@ -181,7 +181,6 @@ addLayer("s", {
     baseAmount() {return player.r.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.5, // Prestige currency exponent
-    autoUpgrade() {return hasMilestone('u4', 0)},
     autoUpgrade() {return hasMilestone('u4', 0) && player.s.autoupg},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
@@ -242,7 +241,7 @@ addLayer("u", {
         unlocked: false,
 		points: new Decimal(0),
     }},
-    branches: ['s'],
+    branches: ['s', 'm'],
     color: "#01497B",
     requires: new Decimal(25), // Can be a function that takes requirement increases into account
     resource: "ultra rebirth points", // Name of prestige currency
@@ -250,6 +249,7 @@ addLayer("u", {
     baseAmount() {return player.s.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.5, // Prestige currency exponent
+    autoUpgrade() {return hasMilestone('u5', 0) && player.u.autoupg},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         cap = new Decimal(1e9)
@@ -303,6 +303,93 @@ addLayer("u", {
         },
     },
     layerShown(){return hasUpgrade('u', 11) || hasUpgrade('s', 14) && hasMilestone('u3', 0)}
+})
+
+addLayer("m", {
+    name: "mega prestige", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "M", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    branches: ['u'],
+    color: "#1D7B01",
+    requires: new Decimal(10), // Can be a function that takes requirement increases into account
+    resource: "mega prestige points", // Name of prestige currency
+    baseResource: "ultra rebirth points", // Name of resource prestige is based on
+    baseAmount() {return player.u.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.5, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        cap = new Decimal(1e9)
+        if (hasUpgrade('u', 15)) mult = mult.times(3)
+        if (hasUpgrade('u', 23)) mult = mult.times(2)
+        if (player.u.points.gte(cap)) mult = mult.times(0)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    row: 4, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "m", description: "M: Reset for mega prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    doReset(resettingLayer) {
+        let keep = [];
+        player.p.points = new Decimal("0"); 
+        player.p.upgrades = []; 
+        player.r.points = new Decimal("0"); 
+        player.r.upgrades = []; 
+        player.s.points = new Decimal("0"); 
+        player.s.upgrades = []; 
+        player.u.points = new Decimal("0"); 
+        player.u.upgrades = []; 
+        player.b.points = new Decimal("0"); 
+        player.b.milestones = []; 
+        player.rb.points = new Decimal("0"); 
+        player.rb.milestones = [];  
+        if (layers[resettingLayer].row > this.row) layerDataReset("u1", keep)
+    },
+    upgrades: {
+        11: {
+            title: "aight thats a bit too much",
+            description: "uhh 10kx points",
+            cost: new Decimal(1),
+            unlocked() { return true },   
+        },
+        12: {
+            title: "faster",
+            description: "Quintuple ultra gain and everything below.",
+            cost: new Decimal(2),
+            unlocked() { return hasUpgrade("m", 11) },   
+        },
+        13: {
+            title: "Megaified points",
+            description: "Point gain is boosted hugely by mega prestige points.",
+            cost: new Decimal(3),
+            effect() {
+                return player[this.layer].points.add(1).pow(1.5)
+            },
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect     
+            unlocked() { return hasUpgrade("m", 12) },   
+        },
+        14: {
+            title: "...",
+            description: "Alright unlock super rebirth boosters.",
+            cost: new Decimal(4),
+            unlocked() { return hasUpgrade("m", 13) },   
+        },
+        15: {
+            title: "three",
+            description: "x333,333 points.",
+            cost: new Decimal(5),
+            unlocked() { return hasUpgrade("m", 14) },   
+        },
+    },
+    layerShown(){return hasUpgrade('m', 11) || hasUpgrade('u', 14) && hasMilestone('u4', 0)}
 })
 
 addLayer("b", {
@@ -391,6 +478,47 @@ addLayer("rb", {
         },
     },
     layerShown(){return hasMilestone('rb', 0) || hasUpgrade('r', 11) && hasUpgrade('u', 14) && hasMilestone('u3', 0)}
+})
+
+addLayer("sb", {
+    name: "super rebirth boosters", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "SB", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    branches: ['s'],
+    color: "#0096FF",
+    requires: new Decimal(1000), // Can be a function that takes requirement increases into account
+    resource: "super rebirth boosters", // Name of prestige currency
+    baseResource: "super rebirth points", // Name of resource prestige is based on
+    baseAmount() {return player.s.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 1, // Prestige currency exponent
+    base: 10,
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    row: 3, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "S", description: "Shift+S: Reset for super rebirth boosters", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+
+    milestones: {
+        0: {
+            requirementDescription: "1 Super Rebirth Booster",
+            done() { return player.sb.points.gte(1) },
+            effectDescription: "Super Rebirth Boosters give x2 rebirth gain compounding as long as there is 1 or more super rebirth booster",
+            unlocked() {return true},
+        },
+    },
+    layerShown(){return hasMilestone('sb', 0) || hasUpgrade('s', 11) && hasUpgrade('m', 14) && hasMilestone('u4', 0)}
 })
 
 addLayer("u1", {
@@ -592,6 +720,68 @@ addLayer("u4", {
             effectDescription: "Unlock mega prestige, keep boosters on ultra prestige, and x10,000 points. Also, passively generate prestige!",
             unlocked() {return true},
             toggles: [["s","autoupg"],["p","autogen"]],
+        },
+    },
+    layerShown(){return hasUpgrade('u', 15) && hasMilestone('u3', 0) || hasMilestone('u4', 0)}
+})
+
+addLayer("u5", {
+    name: "unlock 5", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "U-5", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: -4, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    branches: ['u4'],
+    color: "#FFFF00",
+    requires: new Decimal(10), // Can be a function that takes requirement increases into account
+    resource: "unlockers", // Name of prestige currency
+    baseResource: "mega prestige points", // Name of resource prestige is based on
+    baseAmount() {return player.m.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.5, // Prestige currency exponent
+    base: 1e33000,
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+
+    doReset(resettingLayer) {
+        let keep = [];
+        player.p.points = new Decimal("0"); 
+        player.p.upgrades = []; 
+        player.r.points = new Decimal("0"); 
+        player.r.upgrades = []; 
+        player.s.points = new Decimal("0"); 
+        player.s.upgrades = []; 
+        player.u.points = new Decimal("0"); 
+        player.u.upgrades = []; 
+        player.m.points = new Decimal("0"); 
+        player.m.upgrades = []; 
+        player.b.points = new Decimal("0"); 
+        player.b.milestones = []; 
+        player.rb.points = new Decimal("0"); 
+        player.rb.milestones = []; 
+        player.sb.points = new Decimal("0"); 
+        player.sb.milestones = []; 
+        if (layers[resettingLayer].row > this.row) layerDataReset("u1", keep)
+    },
+    row: 10, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "u", description: "U: Reset for unlocker T4", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+
+    milestones: {
+        0: {
+            requirementDescription: "Unlocker 4",
+            done() { return player.u4.points.gte(1) },
+            effectDescription: "Unlock mega prestige, keep boosters on ultra prestige, and x10,000 points. Also, passively generate prestige!",
+            unlocked() {return true},
+            toggles: [["u","autoupg"],["r","autogen"]],
         },
     },
     layerShown(){return hasUpgrade('u', 15) && hasMilestone('u3', 0) || hasMilestone('u4', 0)}
