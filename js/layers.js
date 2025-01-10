@@ -351,7 +351,6 @@ addLayer("m", {
         player.b.milestones = []; 
         player.rb.points = new Decimal("0"); 
         player.rb.milestones = [];  
-        if (layers[resettingLayer].row > this.row) layerDataReset("u1", keep)
     },
     upgrades: {
         11: {
