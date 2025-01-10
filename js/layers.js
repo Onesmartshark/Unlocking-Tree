@@ -824,7 +824,7 @@ addLayer("a", {
         },
         21: {
             name: "Unlock++++",
-            done() { return player.u3.points.gt(2) },
+            done() { return player.u5.points.gt(0) },
             tooltip: "Unlock the fifth time.",
             image: "",
         },
