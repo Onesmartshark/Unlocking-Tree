@@ -12,26 +12,29 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.4",
-	name: "Official release",
+	num: "1.5",
+	name: "Mega",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v1.5</h3><br>
+		- Added mega prestige<br>
+		- Adderd unlocker T5.<br>
 	<h3>v1.4</h3><br>
-		- Release!!
+		- Release!!<br>
 		- Game will keep updating.<br>
 	<h3>v0.4</h3><br>
-		- Added unlocker T4
+		- Added unlocker T4<br>
 		- Added ultra rebirth.<br>
 	<h3>v0.3.2</h3><br>
-		- Added unlocker T3
+		- Added unlocker T3<br>
 		- Ultra rebirth soon.<br>
 	<h3>v0.3.1</h3><br>
 		- Add another upg to super rebirth.<br>
 	<h3>v0.3</h3><br>
 		- Added super rebirth.<br>
 	<h3>v0.2</h3><br>
-		- Added rebirth.
+		- Added rebirth.<br>
 		- Added unlocker T2.<br>
 	<h3>v0.1</h3><br>
 		- Added prestige.<br>
@@ -70,7 +73,10 @@ function getPointGen() {
 	if (hasUpgrade('r', 12)) gain = gain.times(2)
 	if (hasUpgrade('s', 12)) gain = gain.times(10)
 	if (hasUpgrade('u', 13)) gain = gain.times(upgradeEffect('u', 13))
+	if (hasUpgrade('m', 13)) gain = gain.times(upgradeEffect('m', 13))
 	if (hasUpgrade('u', 15)) gain = gain.times(1000)
+	if (hasUpgrade('m', 12)) gain = gain.times(5)
+	if (hasUpgrade('m', 15)) gain = gain.times(333333)
 	if (hasMilestone('u3', 0)) gain = gain.times(100)
 	if (hasMilestone('u4', 0)) gain = gain.times(10000)
 	two = new Decimal("2")

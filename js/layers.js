@@ -132,6 +132,13 @@ addLayer("r", {
         exp = new Decimal(1)
         return exp
     },
+    bonusfunct1() {
+        pggain = new Decimal(1)
+        if (!hasMilestone('u5', 0)) pggain = pggain.times(0)
+        if (!player.r.autogen) pggain = pggain.times(0)
+        return pggain
+    },
+    passiveGeneration() {return pggain},
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "r", description: "R: Reset for rebirth points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -173,7 +180,7 @@ addLayer("s", {
         unlocked: false,
 		points: new Decimal(0),
     }},
-    branches: ['r'],
+    branches: ['r','u'],
     color: "#0069B2",
     requires: new Decimal(25), // Can be a function that takes requirement increases into account
     resource: "super rebirth points", // Name of prestige currency
@@ -674,7 +681,7 @@ addLayer("u4", {
         unlocked: false,
 		points: new Decimal(0),
     }},
-    branches: ['u3'],
+    branches: ['u3', 'u5'],
     color: "#FFFF00",
     requires: new Decimal(10), // Can be a function that takes requirement increases into account
     resource: "unlockers", // Name of prestige currency
@@ -771,13 +778,13 @@ addLayer("u5", {
     },
     row: 10, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "u", description: "U: Reset for unlocker T4", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "u", description: "U: Reset for unlocker T5", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
 
     milestones: {
         0: {
-            requirementDescription: "Unlocker 4",
-            done() { return player.u4.points.gte(1) },
+            requirementDescription: "Unlocker 5",
+            done() { return player.u5.points.gte(1) },
             effectDescription: "Unlock mega prestige, keep boosters on ultra prestige, and x10,000 points. Also, passively generate prestige!",
             unlocked() {return true},
             toggles: [["u","autoupg"],["r","autogen"]],
