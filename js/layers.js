@@ -331,7 +331,7 @@ addLayer("m", {
     baseResource: "ultra rebirth points", // Name of resource prestige is based on
     baseAmount() {return player.u.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.5, // Prestige currency exponent
+    exponent: 0.7, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         cap = new Decimal(1e9)
@@ -399,7 +399,7 @@ addLayer("m", {
             unlocked() { return hasUpgrade("m", 14) },   
         },
     },
-    layerShown(){return hasUpgrade('m', 11) || hasUpgrade('u', 14) && hasMilestone('u4', 0)}
+    layerShown(){return hasUpgrade('m', 15) || hasUpgrade('u', 14) && hasMilestone('u4', 0)}
 })
 
 addLayer("b", {
