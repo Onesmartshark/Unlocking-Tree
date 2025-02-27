@@ -23,6 +23,7 @@ addLayer("p", {
         if (hasUpgrade('r', 13) && player.p.points.lt(100)) mult = mult.times(5)
         if (hasUpgrade('r', 13) && player.p.points.gte(100)) mult = mult.times(2)
         if (hasUpgrade('s', 11)) mult = mult.times(5)
+        if (hasUpgrade('m', 12)) mult = mult.times(5)
         two = new Decimal("2")
 	    if (hasUpgrade('p', 15)) two = two.add(1)
 	    pb2 = two.pow(player.rb.points)
@@ -125,6 +126,7 @@ addLayer("r", {
         if (hasUpgrade('r', 14)) mult = mult.times(3)
         if (hasUpgrade('s', 14) && player.r.points.lt(100)) mult = mult.times(5)
         if (hasUpgrade('s', 14) && player.r.points.gte(100)) mult = mult.times(2)
+        if (hasUpgrade('m', 12)) mult = mult.times(5)
         if (player.r.points.gte(cap)) mult = mult.times(0)
         return mult
     },
@@ -194,6 +196,7 @@ addLayer("s", {
         cap = new Decimal(1e9)
         if (hasUpgrade('s', 15)) mult = mult.times(3)
         if (hasUpgrade('p', 23)) mult = mult.times(2)
+        if (hasUpgrade('m', 12)) mult = mult.times(5)
         if (player.s.points.gte(cap)) mult = mult.times(0)
         return mult
     },
@@ -262,6 +265,7 @@ addLayer("u", {
         cap = new Decimal(1e9)
         if (hasUpgrade('u', 15)) mult = mult.times(3)
         if (hasUpgrade('u', 23)) mult = mult.times(2)
+        if (hasUpgrade('m', 12)) mult = mult.times(5)
         if (player.u.points.gte(cap)) mult = mult.times(0)
         return mult
     },
